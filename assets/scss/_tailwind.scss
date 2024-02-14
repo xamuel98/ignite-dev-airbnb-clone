@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .button-no-outline {
+        @apply bg-transparent outline-0 decoration-transparent cursor-pointer;
+    }
+
+    .navbar-button {
+        @apply inline-block rounded-full bg-transparent hover:bg-[#F7F7F7] hover:transition-colors;
+    }
+}
