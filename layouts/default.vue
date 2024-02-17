@@ -61,9 +61,6 @@ onMounted(() => {
             let el = mobileNavbarRef.value;
             let mapPillEl = mapPillRef.value;
 
-            console.log(mapPillEl);
-            
-
             if(el && el instanceof HTMLElement) {
                 el.classList.toggle("u-hide-mobile-navbar", scrollY);
             }
@@ -95,7 +92,7 @@ onUnmounted(() => {
             <slot />
         </Suspense>
 
-        <div class="u-map-pill" ref="mapPillRef">
+        <div class="u-map-pill" v-if="currentPage === 'index'" ref="mapPillRef">
             <div class="u-map-pill__inner">
                 <button type="button">
                     <div class="flex text-white font-medium text-xs/4 lg:text-sm/5">

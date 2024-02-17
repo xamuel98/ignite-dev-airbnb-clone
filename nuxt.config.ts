@@ -12,7 +12,7 @@ export default defineNuxtConfig({
         '~/plugins/clickOutsideDirective.ts',
         '~/plugins/filters.ts',
     ],
-    modules: ['@vueuse/motion/nuxt', '@pinia/nuxt',],
+    modules: ['@pinia/nuxt'],
     css: ['~/assets/scss/main.scss'],
     postcss: {
         plugins: {

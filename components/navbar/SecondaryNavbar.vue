@@ -23,8 +23,8 @@ onMounted(() => {
 
 <template>
     <div class="flex items-center sticky z-10 w-full h-max lg:h-[90px] pt-2 u-secondary-navbar" ref="secondaryNavbarRef">
-        <div class="relative flex justify-start items-center overflow-x-hidden space-x-4 md:px-10 lg:px-10 2xl:px-20">
-            <div class="w-[-webkit-fill-available] lg:w-auto">
+        <div class="relative flex justify-start items-center overflow-x-hidden space-x-4 lg:px-10 2xl:px-20 lg:w-full">
+            <div class="w-[-webkit-fill-available]">
                 <Categories />
             </div>
             <button type="button" class="text-xs font-medium border border-[#DDDDDD] bg-white h-12 py-2 px-4 rounded-xl cursor-pointer hidden lg:inline-flex justify-center items-center gap-2 align-middle outline-0 shadow-none">
@@ -32,7 +32,7 @@ onMounted(() => {
                 <span>Filters</span>
             </button>
             <button type="button" class="text-xs font-medium border border-[#DDDDDD] bg-white h-12 py-2 px-4 rounded-xl cursor-pointer hidden lg:inline-flex justify-center items-center gap-2 align-middle outline-0 shadow-none">
-                <span>Display total before taxes</span>
+                <span class="text-nowrap">Display total before taxes</span>
                 <label class="switch" for="taxes">
                     <input type="checkbox" name="taxes" value="taxes" id="taxes">
                     <span class="slider round">

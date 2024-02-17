@@ -1,6 +1,5 @@
 <script lang="tsx" setup>
 import { useSearchStore } from "~/stores/search";
-import { useListingsStore } from "~/stores/listings";
 import DestinationDropdown from "./destination/DestinationDropdown.vue";
 import GuestDropdown from "./guest/GuestDropdown.vue";
 
@@ -291,24 +290,24 @@ watch(() => getIsActive.value, (newValue) => {
 		}
 
 		label {
-			@apply w-fit text-[13px] font-medium leading-4 pb-[.125rem];
+			@apply w-fit text-[13px] font-medium leading-4 pb-[.125rem] text-nowrap text-ellipsis line-clamp-1;
 		}
 
 		input[type="text"] {
-			@apply w-full bg-transparent text-[14px] text-[#222222] font-medium leading-5;
+			@apply w-full bg-transparent text-[14px] text-[#222222] font-medium leading-5 text-nowrap text-ellipsis line-clamp-1;
 			&:focus {
 				@apply outline-0 shadow-none;
 			}
 			&::placeholder {
-				@apply text-[#717171] font-normal;
+				@apply text-[#717171] font-normal text-nowrap text-ellipsis line-clamp-1;
 			}
 
 			&::-moz-placeholder {
-				@apply text-[#717171] font-normal;
+				@apply text-[#717171] font-normal text-nowrap text-ellipsis line-clamp-1;
 			}
 
 			&::-webkit-input-placeholder {
-				@apply text-[#717171] font-normal;
+				@apply text-[#717171] font-normal text-nowrap text-ellipsis line-clamp-1;
 			}
 		}
 	}

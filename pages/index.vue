@@ -109,7 +109,7 @@ onMounted(() => {
 
 <template>
 	<div class="px-6 md:px-10 lg:px-10 2xl:px-20 mt-6 lg:mt-3 mb-[calc(66px+24px)]">
-		<div class="grid grid-cols-5 gap-x-6 gap-y-10">
+		<div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-x-6 gap-y-10">
 			<Shimmer
 				v-if="loading"
 				:loading="loading"

@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@vue/runtime-dom": "^3.4.19",
-    "@vueuse/motion": "^2.0.0",
     "nuxt": "^3.10.1",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5"
