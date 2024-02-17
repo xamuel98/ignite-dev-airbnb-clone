@@ -1,8 +1,10 @@
 <script lang="tsx" setup>
+import { useSearchStore } from "~/stores/search";
 import DestinationDropdown from "./destination/DestinationDropdown.vue";
 import GuestDropdown from "./guest/GuestDropdown.vue";
 
-const isActive = ref<number>(0);
+const searchStore = useSearchStore();
+
 const inputRef: any = {
 	destinationsRef: ref(null),
 	fromDateRef: ref(null),
@@ -12,26 +14,52 @@ const inputRef: any = {
 const selectedDestinationOption = ref<string | null>(null);
 const guestCategoryCount = ref<{ [key: string]: number }>({});
 
+
+const getIsActive = computed(() => {
+	return searchStore.getIsActive;
+});
+
+const getAllowOutsideClick = computed(() => {
+	return searchStore.getAllowOutsideClick;
+});
+
+
 // Reset active state to 0 when document body is clicked
-const setSearchItemToInActive = () => {
-	if (isActive.value) {
-		isActive.value = 0;
+const setSearchItemToInActive = (event: MouseEvent) => {
+	// Check if outside click is allowed
+	if (!getAllowOutsideClick.value) {
+		// Perform action for outside click
+		if(document) {
+			let el = document.querySelector('.navbar-search');
+			let grandParent = el?.parentElement?.parentElement;
+			let eventTargetParent = grandParent?.querySelector('.u-navbar-search-small');
+			if (!eventTargetParent?.contains(event.target as Node) && eventTargetParent !== event.target) {
+				// Reset flag variable to allow outside click for subsequent events
+				searchStore.SET_ACTIVE(0);
+				searchStore.SET_ALLOW_OUTSIDE_CLICK(false);
+			}
+		}
+    } else {
+		// Reset flag variable to allow outside click for subsequent events
+		searchStore.SET_ACTIVE(0);
+		searchStore.SET_ALLOW_OUTSIDE_CLICK(false);
 	}
 };
 
 // Focus search field input field on click of the div wrapper
 const setSearchItemToActive = (index: number, ref: string) => {
-	isActive.value = index;
+	// isActive.value = index;
+	searchStore.SET_ACTIVE(index);
 	inputRef[ref]?.value?.focus();
 };
 
 // Returns true if any search field is active
 const anySearchItemIsActive = computed(() => {
 	return (
-		isActive.value === 1 ||
-		isActive.value === 2 ||
-		isActive.value === 3 ||
-		isActive.value === 4
+		getIsActive.value === 1 ||
+		getIsActive.value === 2 ||
+		getIsActive.value === 3 ||
+		getIsActive.value === 4
 	);
 });
 
@@ -100,6 +128,23 @@ const DismissIcon = () => (
 		<path d="m6 6 20 20M26 6 6 26"></path>
 	</svg>
 );
+
+// Open next dropdown when option changes
+// This closes the current dropdown and opens the next one
+watch(() => selectedDestinationOption.value, (newValue) => {
+    if(newValue) {
+		searchStore.SET_ACTIVE(4);
+	}
+});
+
+watch(() => getIsActive.value, (newValue) => {
+    if(newValue) {
+		searchStore.SET_ACTIVE(newValue);
+
+		console.log("New Value", newValue);
+		
+	}
+});
 </script>
 
 <template>
@@ -111,7 +156,7 @@ const DismissIcon = () => (
 		>
 			<div
 				class="navbar-search-item u-navbar-search"
-				:class="{ active: isActive === 1 }"
+				:class="{ active: getIsActive === 1 }"
 				@click="setSearchItemToActive(1, 'destinationsRef')"
 			>
 				<label for="where">Where</label>
@@ -127,7 +172,7 @@ const DismissIcon = () => (
 			>
 				<div
 					class="w-1/2 u-navbar-search"
-					:class="{ active: isActive === 2 }"
+					:class="{ active: getIsActive === 2 }"
 					@click="setSearchItemToActive(2, 'fromDateRef')"
 				>
 					<label for="check-in">Check in</label>
@@ -140,7 +185,7 @@ const DismissIcon = () => (
 				</div>
 				<div
 					class="w-1/2 u-navbar-search"
-					:class="{ active: isActive === 3 }"
+					:class="{ active: getIsActive === 3 }"
 					@click="setSearchItemToActive(3, 'toDateRef')"
 				>
 					<label for="check-out">Where</label>
@@ -154,7 +199,7 @@ const DismissIcon = () => (
 			</div>
 			<div
 				class="w-2/6 flex items-center search-button-wrapper"
-				:class="{ active: isActive === 4 }"
+				:class="{ active: getIsActive === 4 }"
 				@click="setSearchItemToActive(4, 'guestRef')"
 			>
 				<div class="!w-full navbar-search-item u-navbar-search">
@@ -167,7 +212,7 @@ const DismissIcon = () => (
 						class="text-ellipsis"
 					/>
 				</div>
-				<button type="submit" class="navbar-button search-button">
+				<button type="submit" class="navbar-button search-button" @click.stop>
 					<img
 						src="/icons/search.svg?url"
 						alt="Search Icon"
@@ -179,13 +224,13 @@ const DismissIcon = () => (
 		</form>
 
 		<DestinationDropdown
-			v-if="isActive === 1"
+			v-if="getIsActive === 1"
 			@get-destination="getDestinationValue"
 		/>
 
 		<GuestDropdown
 			@get-category="getGuestCategoryCount"
-			v-else-if="isActive === 4"
+			v-else-if="getIsActive === 4"
 		/>
 	</div>
 </template>
@@ -332,7 +377,7 @@ const DismissIcon = () => (
 			overflow: hidden;
 			gap: 0.3125rem;
 			transition: 0.3s all;
-            
+
             &:hover {
                 background: linear-gradient(
                     to right,
@@ -351,4 +396,60 @@ const DismissIcon = () => (
 		}
 	}
 }
+
+// .u-navbar-search-small {
+// 	&__tab { 
+// 		border: 1px solid transparent;
+// 		text-align: inherit;
+// 		background: transparent;
+// 		font-weight: inherit;
+// 		cursor: pointer;
+// 		margin: -1px;
+// 		padding: 0;
+// 		padding-left: 8px;
+// 		line-height: inherit;
+// 		font-size: inherit;
+// 		display: flex;
+// 		align-items: center;
+// 		border-radius: 4px;
+// 		position: relative;
+// 		color: inherit;
+// 		height: 48px;
+// 		outline: none;
+
+// 		span {
+// 			text-overflow: ellipsis;
+// 			white-space: nowrap;
+// 			overflow: hidden;
+// 			flex: 1 1 auto;
+// 			line-height: 1.375rem;
+// 			font-weight: 500;
+// 			font-size: 0.875rem;
+// 			padding: 0 16px;
+// 			min-width: 80px;
+// 		}
+// 	}
+
+// 	&__button {
+// 		border-radius: 50%;
+// 		padding: 10px;
+// 		margin: 7px 7px 7px 0;
+// 		width: 32px;
+// 		height: 32px;
+// 		color: #FFFFFF;
+// 		background-color: #FF385C;
+
+// 		img {
+// 			filter: invert(1) grayscale(1);
+// 			-webkit-filter: invert(1) grayscale(1);
+// 		}
+// 	}
+
+// 	.b-divider {
+// 		width: 1px;
+// 		height: 24px;
+// 		flex: 0 0 1px;
+// 		background-color: #DDDDDD;
+// 	}
+// }
 </style>

@@ -2,16 +2,17 @@
 export default defineNuxtConfig({
     devtools: { enabled: true },
     vue: {
-        config: {
+        config:  {
             compatConfig: {
                 MODE: 2,
             },
         },
     },
     plugins: [
-        '~/plugins/clickOutsideDirective.ts'
+        '~/plugins/clickOutsideDirective.ts',
+        '~/plugins/filters.ts',
     ],
-    modules: ['@vueuse/motion/nuxt'],
+    modules: ['@vueuse/motion/nuxt', '@pinia/nuxt',],
     css: ['~/assets/scss/main.scss'],
     postcss: {
         plugins: {

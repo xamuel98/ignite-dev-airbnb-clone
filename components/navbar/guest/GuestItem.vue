@@ -2,11 +2,13 @@ import type { mergeProps } from 'vue'; import type { mergeProps } from 'vue';
 
 <script lang="tsx" setup>
 import type { IGuestItemProps, IGuestItemEmits } from "~/types/guest";
+import { useSearchStore } from "~/stores/search";
 
-const props = defineProps<{ category: IGuestItemProps }>();
+const { category } = defineProps<{ category: IGuestItemProps }>();
 const emits = defineEmits<IGuestItemEmits>();
 
-const categories = ["Adults", "Children", "Infants", "Pets"];
+// Initialize store
+const searchStore = useSearchStore();
 
 // Create an object to store counts for each category
 // Initialize counts for each category
@@ -58,14 +60,19 @@ const PlusIcon = () => (
 		<path d="m6.75.75v4.5h4.5v1.5h-4.5v4.5h-1.5v-4.5h-4.5v-1.5h4.5v-4.5z"></path>
 	</svg>
 );
+
+// Return store getter
+const getGuests = computed(() => {
+    return searchStore.getGuests;
+});
 </script>
 
 <template>
-	<div class="u-guest-item" :key="props.category.id">
+	<div class="u-guest-item" :key="category.id">
 		<div class="flex flex-col">
-			<h2 class="text-base font-medium">{{ props.category.title }}</h2>
+			<h2 class="text-base font-medium">{{ category.title }}</h2>
 			<p class="text-[13px] font-normal leading-4 text-[#717171]">
-				{{ props.category.subtitle }}
+				{{ category.subtitle }}
 			</p>
 		</div>
 		<div class="u-guest-controls">
@@ -73,11 +80,11 @@ const PlusIcon = () => (
 				class="u-guest-button"
 				type="button"
 				:disabled="
-					props.category.title === 'Adults'
-						? counts[props.category.title] <= 1
-						: counts[props.category.title] <= 0
+					category.title === 'Adults'
+						? counts[category.title] <= 1
+						: counts[category.title] <= 0
 				"
-				@click="DecrementCount(props.category.title)"
+				@click="DecrementCount(category.title)"
 			>
 				<div class="u-guest-icon-circle">
 					<MinusIcon />
@@ -85,15 +92,15 @@ const PlusIcon = () => (
 			</button>
 			<input
 				type="number"
-				v-model.number="counts[props.category.title]"
-				:min="props.category.min"
-				:max="props.category.max"
+                v-model.number="counts[category.title]"
+				:min="category.min"
+				:max="category.max"
 			/>
 			<button
 				class="u-guest-button"
 				type="button"
-				:disabled="counts[props.category.title] >= props.category.max"
-				@click="IncrementCount(props.category.title)"
+				:disabled="counts[category.title] >= category.max"
+				@click="IncrementCount(category.title)"
 			>
 				<div class="u-guest-icon-circle">
 					<PlusIcon />

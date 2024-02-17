@@ -3,34 +3,47 @@ import type {
 	IDestinationItemProps,
 	IDestinationItemEmits,
 } from "~/types/destination";
+import { useSearchStore } from '~/stores/search';
 
-const props = defineProps<{ destination: IDestinationItemProps }>();
+const { destination } = defineProps<{ destination: IDestinationItemProps }>();
 const emits = defineEmits<IDestinationItemEmits>();
+
+// Initialize store
+const searchStore = useSearchStore();
 
 // Handle change event
 const handleChange = (newValue: string) => {
 	emits("input", newValue);
+
+    // Dispatch action to update store
+    searchStore.SET_DESTINATION(newValue);
 };
+
+// Return store getter
+const getDestination = computed(() => {
+    return searchStore.getDestination;
+});
 </script>
 
 <template>
-	<label class="u-continent" :for="props.destination.slug">
+	<label class="u-continent" :for="destination.slug">
 		<input
 			type="radio"
 			name="destination"
-			@change="handleChange(props.destination.name)"
-			:value="props.destination.name"
-			:id="props.destination.slug"
+			@change="handleChange(destination.name)"
+			:value="getDestination || destination.name"
+			:id="destination.slug"
+            :checked="getDestination === destination.name"
 		/>
 		<div class="u-continent-wrapper">
 			<div class="u-continent-image-wrapper">
 				<img
-					:src="props.destination.imageURL"
+					:src="destination.imageURL"
 					alt="Map Image"
 					class="u-continent-image"
 				/>
 			</div>
-			<p class="text-[13px] font-normal">{{ props.destination.title }}</p>
+			<p class="text-[13px] font-normal">{{ destination.title }}</p>
 		</div>
 	</label>
 </template>
@@ -46,12 +59,10 @@ const handleChange = (newValue: string) => {
 		height: 0;
 	}
 
-	/* IMAGE STYLES */
 	[type="radio"] + .u-continent-wrapper > .u-continent-image-wrapper {
 		cursor: pointer;
 	}
 
-	/* CHECKED STYLES */
 	[type="radio"]:checked + .u-continent-wrapper > .u-continent-image-wrapper {
 		@apply border border-[#222222];
 	}

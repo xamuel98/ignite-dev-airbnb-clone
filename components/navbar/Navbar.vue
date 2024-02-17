@@ -1,5 +1,22 @@
 <script lang="tsx" setup>
-// using defineComponent setup that returns render function with TSX syntax
+import SecondaryNavbar from "./SecondaryNavbar.vue";
+import MobileNavbar from "./MobileNavbar.vue";
+
+const isMobile = useState('isMobile');
+
+const closeOverlay = () => {
+	if (document) {
+		let body = document.body;
+
+		if (body.classList.contains("cb")) {
+			body.classList.remove("cb");
+			document
+				.querySelector(".u-navbar-search-small")
+				?.classList.remove("override--u-navbar-search-small__active");
+		}
+	}
+};
+
 const AirbnbLogoDesktop = () => (
 	<svg width="102" height="32">
 		<path
@@ -39,15 +56,36 @@ const AirbnbLogoComponent = () => (
 </script>
 
 <template>
-	<header class="left-0 right-0 relative w-full h-20 z-[9999]">
+	<header
+		class="left-0 right-0 relative w-full z-[9999] transform-header-height"
+	>
 		<div
-			class="flex justify-between items-center relative w-full h-full mx-auto px-6 md:px-10 lg:px-10 2xl:px-20"
+			v-if="!isMobile"
+			class="hidden lg:flex justify-between items-center relative w-full h-auto mx-auto px-6 md:px-10 lg:px-10 2xl:px-20 custom-z"
 		>
 			<AirbnbLogoComponent />
 			<NavbarCS />
 			<NavbarRHS />
 		</div>
+		<MobileNavbar v-if="isMobile" />
 	</header>
+	<div class="u-overlay" @click="closeOverlay"></div>
+
+	<SecondaryNavbar />
 </template>
 
-<style></style>
+<style lang="scss" scoped>
+header {
+	--padding-bottom: 16px;
+	background: #ffffff;
+	height: calc(5rem + 66px + var(--padding-bottom));
+	padding-bottom: var(--padding-bottom);
+	border-bottom: 1px solid rgb(0 0 0/8%);
+	// transition: ;
+
+	@media (max-width: 768px) {
+		height: 77px;
+		border-bottom: none;
+	}
+}
+</style>

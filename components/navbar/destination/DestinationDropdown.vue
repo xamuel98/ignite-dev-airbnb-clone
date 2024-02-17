@@ -26,6 +26,6 @@ const handleSelectOption = (value: string) => {
 
 <style lang="scss" scoped>
 .destination-dropdown-menu {
-	@apply absolute top-20 left-0 p-9 bg-white shadow-[0_4px_12px_rgba(0,0,0,0.15)] w-auto h-auto rounded-3xl;
+	@apply absolute top-20 z-[9999] left-0 p-9 bg-white shadow-[0_4px_12px_rgba(0,0,0,0.15)] w-auto h-auto rounded-3xl;
 }
 </style>

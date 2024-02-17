@@ -10,4 +10,14 @@
     .navbar-button {
         @apply inline-block rounded-full bg-transparent hover:bg-[#F7F7F7] hover:transition-colors;
     }
+
+    .no-scrollbar {
+        scrollbar-width: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
 }
