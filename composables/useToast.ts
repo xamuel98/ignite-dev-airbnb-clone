@@ -1,9 +1,11 @@
-import { generateUniqueId } from '~/utils/constants';
+import useGenerators from '~/utils/generators';
 import { computed, ref } from "vue";
 import type { Toast } from "~/types/toast";
 
 
 let toastList = ref<Toast[]>([]);
+
+const { generateUniqueId } = useGenerators();
 
 export const useToast = () => {
     const setToast = (toast: Toast) => {

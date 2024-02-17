@@ -1,10 +1,11 @@
-import type { ListCardProps as Listing } from "~/types/listing";
+import type { ListCardProps as Listing, IFilterQueryParams } from "~/types/listing";
 import { LISTINGS } from "~/utils/constants";
 import useToast from '~/composables/useToast';
 
 interface IListingsStoreState {
     listings: Listing[];
-    favorites: { [key: number]: string }[]
+    favorites: { [key: number]: string }[],
+    filterQueryParams: IFilterQueryParams;
 }
 
 const { createToast } = useToast();
@@ -12,10 +13,12 @@ const { createToast } = useToast();
 export const useListingsStore = defineStore('listingsStore', {
     state: (): IListingsStoreState => ({
         listings: [...LISTINGS],
+        filterQueryParams: {},
         favorites: [],
     }),
     getters: {
         getListings: (state): Listing[] =>  state.listings,
+        getFilterQueryParams: (state): IFilterQueryParams => state.filterQueryParams,
     },
     actions: {
         TOGGLE_IS_FAVORITE(listingId: string) {
@@ -30,6 +33,9 @@ export const useListingsStore = defineStore('listingsStore', {
                 this.favorites.splice(index, 1);
                 createToast('warning', 'Removed listing to favorites');
             }
+        },
+        SET_FILTER_QUERY(queryParams: IFilterQueryParams) {
+            this.filterQueryParams = queryParams;
         },
     },
 });

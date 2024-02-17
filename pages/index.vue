@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { LISTINGS } from "~/utils/constants";
-import type { ListCardProps as Listing } from "~/types/listing";
+import type { ListCardProps as Listing, IFilterQueryParams } from "~/types/listing";
 import ListCard from "~/components/listing/ListCard.vue";
 import { useSearchStore } from "~/stores/search";
 import { useListingsStore } from "~/stores/listings";
@@ -22,9 +22,17 @@ const addToFavourite = (id: string) => {
     listingsStore.TOGGLE_IS_FAVORITE(id);
 };
 
+const isEmptyObject = (object: IFilterQueryParams) => {
+  return Object.keys(object).length === 0;
+};
+
 // Get selected category for filter
 const getFilterCategory = computed(() => {
     return searchStore.getCategory;
+});
+
+const getFilterSearchQueries = computed(() => {
+	return searchStore.getFilterQueryParams;
 });
 
 // Filter listing by category
@@ -32,16 +40,31 @@ const filterListingsByCategory = (listings: Listing[]) => {
     if(!listings){
         return [];
     } else {
-        if (!getFilterCategory.value) return listings;
+        if (getFilterCategory.value === "all-categories") return listings;
         return listings
             .filter(({data}) => data.category.toLowerCase() === getFilterCategory.value)
     }
 };
 
+// Filter listing by region
+const filterListingsByRegion = (listings: Listing[]) => {
+	if(!isEmptyObject(getFilterSearchQueries.value)) {
+		const regionQuery = getFilterSearchQueries.value['region'];
+
+		if (!regionQuery) return listings;
+		return listings
+				.filter(({data}) => data.region.toLowerCase() === regionQuery?.toLowerCase())
+	}
+
+	return listings;
+};
+
 // Get listing data
 const getListingData = computed(() => {
+	const originalListings = listingsStore.getListings.slice(); // Create shallow copy of listings array to avoid mutating the original array
+
 	if (!loading.value){
-        const filteredListings = filterListingsByCategory(listingsStore.getListings);
+        const filteredListings = filterListingsByCategory(filterListingsByRegion(originalListings));
         return filteredListings;
     }
 });
@@ -85,7 +108,7 @@ onMounted(() => {
 </script>
 
 <template>
-	<div class="px-6 md:px-10 lg:px-10 2xl:px-20 mt-6 lg:mt-3 mb-[calc(66px+24px)] lg:mb-0">
+	<div class="px-6 md:px-10 lg:px-10 2xl:px-20 mt-6 lg:mt-3 mb-[calc(66px+24px)]">
 		<div class="grid grid-cols-5 gap-x-6 gap-y-10">
 			<Shimmer
 				v-if="loading"

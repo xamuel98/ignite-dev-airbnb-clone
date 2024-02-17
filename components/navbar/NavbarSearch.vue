@@ -1,5 +1,6 @@
 <script lang="tsx" setup>
 import { useSearchStore } from "~/stores/search";
+import { useListingsStore } from "~/stores/listings";
 import DestinationDropdown from "./destination/DestinationDropdown.vue";
 import GuestDropdown from "./guest/GuestDropdown.vue";
 
@@ -116,6 +117,15 @@ const parsedCategory = computed(() => {
 	return result;
 });
 
+// Search for available listings
+const searchAvailableListings = () => {
+	const filterQuery = {
+		'region': selectedDestinationOption.value,
+	};
+
+	searchStore.SET_FILTER_QUERY(filterQuery);
+};
+
 const DismissIcon = () => (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
@@ -140,9 +150,6 @@ watch(() => selectedDestinationOption.value, (newValue) => {
 watch(() => getIsActive.value, (newValue) => {
     if(newValue) {
 		searchStore.SET_ACTIVE(newValue);
-
-		console.log("New Value", newValue);
-		
 	}
 });
 </script>
@@ -151,6 +158,7 @@ watch(() => getIsActive.value, (newValue) => {
 	<div class="absolute w-full navbar-search">
 		<form
 			v-click-outside="setSearchItemToInActive"
+			@submit.prevent="searchAvailableListings"
 			:class="anySearchItemIsActive ? 'navbar-search-active' : ''"
 			class="relative inline-flex items-center w-full h-[66px] bg-transparent border border-[#DDDDDD] rounded-full shadow-[0_3px_12px_0_rgba(0,0,0,0.1),0_1px_2px_0_rgba(0,0,0,0.08)] outline-0"
 		>

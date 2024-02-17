@@ -1,5 +1,7 @@
 <template>
-    <div class="flex justify-center items-center h-screen">
+    <div class="flex flex-col justify-center items-center h-screen">
         <h1>Wishlists Page</h1>
+        
+        <NuxtLink to="/" class="mt-8 text-sm font-medium text-[#e31c5f]">Go Back</NuxtLink>
     </div>
 </template>

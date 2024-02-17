@@ -5,7 +5,10 @@
 import type { IDestinationItemProps as Destination } from "~/types/destination";
 import type { IGuestItemProps as Guest } from "~/types/guest";
 import type { ICategoryProps as Category } from "~/types/category";
-import type { ListCardProps as Listing, ImageProps } from "~/types/listing";
+import type { ListCardProps as Listing } from "~/types/listing";
+import useGenerators from "./generators";
+
+const { generateRandomListings } = useGenerators();
 
 // Static destinations
 export const DESTINATIONS: Destination[] = [
@@ -34,14 +37,14 @@ export const DESTINATIONS: Destination[] = [
         id: 4,
         name: "United States",
         imageURL: "/images/united-states.webp",
-        slug: "united-states",
+        slug: "usa",
         title: "United States"
     },
     {
         id: 5,
         name: "United Kingdom",
         imageURL: "/images/united-kingdom.webp",
-        slug: "united-kingdom",
+        slug: "uk",
         title: "United Kingdom"
     },
     {
@@ -87,6 +90,11 @@ export const GUEST_CATEGORY: Guest[] = [
 
 // Static listings categories
 export const CATEGORIES: Category[] = [
+    {
+        name: "All categories",
+        slug: "all-categories",
+        iconURL: "/icons/new.jpeg",
+    },
     {
         name: "Rooms",
         slug: "rooms",
@@ -354,133 +362,58 @@ export const CATEGORIES: Category[] = [
     }
 ];
 
-/**
- * @description Function to generate random image URLs for listing
- * @param {String} seed seed to resolve Hydration attribute mismatch on server side
- * @returns {String} A random image URL
- */
-export const generateRandomImageUrl = (seed: string = ''): string => {
-    const placeholderUrls = [
-        "/images/listings/photo-1.avif",
-        "/images/listings/photo-2.avif",
-        "/images/listings/photo-3.avif",
-        "/images/listings/photo-4.avif",
-        "/images/listings/photo-5.avif",
-        "/images/listings/photo-6.avif",
-        "/images/listings/photo-7.avif",
-        "/images/listings/photo-8.avif",
-        "/images/listings/photo-9.avif",
-        "/images/listings/photo-10.avif",
-        "/images/listings/photo-11.avif",
-        "/images/listings/photo-12.avif",
-    ];
-    const randomIndex = Math.floor(Math.random() * placeholderUrls.length);
-    return placeholderUrls[randomIndex];
-};
-
-/**
- * @description Function to generate random corresponding image alt text for listing
- * @param {String} seed seed to resolve Hydration attribute mismatch on server side
- * @returns {String} A random image URL
- */
-export const generateRandomAltText = (seed: string = ''): string => {
-    const placeholderAltTexts = [
-        "A beautiful scenery",
-        "A dinner restaurant",
-        "A colorful street path",
-        "A river with a bridge",
-        "Street Path",
-        "A hallway with a door and a rug on the floor",
-        "A dining room table in front of a window",
-        "A bedroom with a bed and a large window",
-        "A cabin in the woods surrounded by trees",
-        "A house surrounded by trees",
-        "A small white house with a wooden roof",
-        "A green plant hanging from a ceiling light"
-    ];
-    const randomIndex = Math.floor(Math.random() * placeholderAltTexts.length);
-    return  placeholderAltTexts[randomIndex];
-};
-
-/**
- * @description Generate random images for the listing
- * @param {Number} count Number of images and alt text to generate
- * @param {String} seed seed to resolve Hydration attribute mismatch on server side
- * @returns {Array} An array of objects containing random images and alt text
- */
-export const generateRandomImages = (count: number): ImageProps[] => {
-    const images: ImageProps[] = [];
-    for (let i = 0; i < count; i++) {
-        const src = generateRandomImageUrl();
-        const alt = generateRandomAltText();
-        images.push({ src, alt });
-    }
-    return images;
-};
-
-// Static listings
-export const LISTINGS: Listing[] = [
-    {
-        data: {
-            id: "1",
-            images: generateRandomImages(7),
-            title: "Terricciola, Italy",
-            description: "Description 1",
-            rating: 4.5,
-            category: "trending",
-            roomCount: 3,
-            bathroomCount: 2,
-            guestCount: 6,
-            price: 100.65,
-            country: "Italy",
-            latlng: [0, 0],
-            region: "Region 1",
-        },
-        reservation: {
-            startDate: '2024-01-15',
-            endDate: '2024-01-22',
-        },
-        isFavorite: false,
-    },
-    {
-        data: {
-            id: "2",
-            images: generateRandomImages(5),
-            title: "Lagos, Nigeria",
-            description: "Description 1",
-            rating: 4.5,
-            category: "amazing-views",
-            roomCount: 3,
-            bathroomCount: 2,
-            guestCount: 6,
-            price: 100,
-            country: "Nigeria",
-            latlng: [0, 0],
-            region: "Region 1",
-        },
-        reservation: {
-            startDate: '2024-01-15',
-            endDate: '2024-01-22',
-        },
-        isFavorite: false,
-    },
+// Static places
+export const PLACES: string[] = [
+    "Mountain",
+    "Beach",
+    "Lake",
+    "Forest",
+    "Desert",
+    "Island",
+    "Valley",
+    "Countryside",
+    "City",
+    "Village"
 ];
 
-/**
- * @description Generate a unique id
- * @param {Number} length length of unique id
- * @param {String} seed seed to resolve Hydration attribute mismatch on server side
- * @returns {String} A unique string ID
- */
-export const generateUniqueId = (length: number=10, seed: string=''): string => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+// Static countries
+export const COUNTRIES: string[] = [
+    "Italy",
+    "France",
+    "Spain",
+    "USA",
+    "Canada",
+    "Australia",
+    "Japan",
+    "Brazil",
+    "India",
+    "Germany"
+];
 
-    let result: string = '';
-    const characterLength = characters.length;
+// Static reegions/continents
+export const REGIONS: string[] = [
+    "Europe",
+    "Canada",
+    "United States",
+    "United Kingdom",
+    "Middle East",
+    "Asia",
+    "South America",
+];
 
-    for (let i = 0; i < characterLength; i++) {
-        result += characters.charAt(Math.floor(Math.random() * characterLength));
-    }
+// Static descriptions
+export const DESCRIPTIONS: string[] = [
+    "Beautiful scenery",
+    "Stunning views",
+    "Cozy retreat",
+    "Perfect getaway",
+    "Charming cottage",
+    "Serene escape",
+    "Quaint hideaway",
+    "Idyllic spot",
+    "Tranquil oasis",
+    "Picturesque setting"
+];
 
-    return `${seed}-${result}`;
-};
+// Static listings
+export const LISTINGS: Listing[] = generateRandomListings(40, CATEGORIES, DESCRIPTIONS, PLACES, COUNTRIES, REGIONS);

@@ -28,3 +28,7 @@ export interface ImageProps {
     src: string;
     alt: string;
 }
+
+export interface IFilterQueryParams {
+    [key: string]: string | null;
+}

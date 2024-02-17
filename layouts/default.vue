@@ -1,11 +1,15 @@
 <script lang="tsx" setup>
 import Navbar from "~/components/navbar/Navbar.vue";
 import Toast from "~/components/Toast/Toast.vue";
+import { useSearchStore } from "~/stores/search";
 
 const mobileNavbarRef = ref<HTMLElement | null>(null);
+const mapPillRef = ref<HTMLElement | null>(null);
+
 const isMobile = useState('isMobile', () => false);
 
 const route = useRoute();
+const searchStore = useSearchStore();
 
 const currentPage = computed(() => {
     return route.name;
@@ -15,6 +19,14 @@ const handleResize = () => {
     // Determine if the screen is mobile or not
     if(process.client) {
         isMobile.value = window.innerWidth <= 768;
+        searchStore.SET_ACTIVE(0);
+
+        // Add class when is mobile
+        if(isMobile.value && !document.body.classList.contains('support-mobile-view')) {
+            document.body.classList.add('support-mobile-view');
+        } else {
+            document.body.classList.remove('support-mobile-view');
+        }
     }
 };	
 
@@ -47,10 +59,18 @@ onMounted(() => {
         window.addEventListener("scroll", function() {
             let scrollY = window.scrollY > 250;
             let el = mobileNavbarRef.value;
+            let mapPillEl = mapPillRef.value;
+
+            console.log(mapPillEl);
+            
 
             if(el && el instanceof HTMLElement) {
                 el.classList.toggle("u-hide-mobile-navbar", scrollY);
-            }           
+            }
+            
+            if(mapPillEl && mapPillEl instanceof HTMLElement) {
+                mapPillEl.classList.toggle("u-map-pill__bottom", window.scrollY > 320)
+            }
         });
 
         // Initial check on mount
@@ -68,12 +88,28 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <main class="relative">
+    <main class="relative" :key="$route.fullPath">
         <Navbar v-if="currentPage === 'index'"/>
 
         <Suspense>
             <slot />
         </Suspense>
+
+        <div class="u-map-pill" ref="mapPillRef">
+            <div class="u-map-pill__inner">
+                <button type="button">
+                    <div class="flex text-white font-medium text-xs/4 lg:text-sm/5">
+                        <span class="inline-flex self-center text-white font-medium text-xs/4 lg:text-sm/5"> 
+                            <span v-if="isMobile">Map</span>
+                            <span v-else>Show map</span> 
+                        </span>
+                        <div class="ml-2 inline-flex items-center">
+                            <img src="/icons/map.svg" alt="Map Icon" class="w-4 h-4">
+                        </div>
+                    </div>
+                </button>
+            </div>
+        </div>
 
         <nav v-if="isMobile" class="u-mobile-navbar" ref="mobileNavbarRef">
             <div class="u-mobile-navbar__links">
@@ -92,15 +128,32 @@ onUnmounted(() => {
             </div>
         </nav>
     </main>
+
+
     <client-only>
         <Toast/> 
     </client-only>
 </template>
 
 <style lang="scss" scoped>
+.u-map-pill {
+    transform: translateY(-65px);
+    transition: transform 0.2s cubic-bezier(0.455,0.03,0.515,0.955);
+    @apply w-full fixed visible bottom-0 z-[999];
+
+    &__inner {
+        transition: -ms-transform 0.2s ease-in-out 0s, -webkit-transform 0.2s ease-in-out 0s, transform 0.2s ease-in-out 0s, opacity 0.15s linear 0s, visibility 0s ease 0s !important;
+        @apply relative flex visible justify-center whitespace-nowrap mb-6 opacity-100 z-10;
+
+        button {
+            @apply appearance-none inline-flex items-center justify-center border border-[rgba(0,0,0,0.08)] rounded-3xl outline-0 m-0 py-2.5 lg:py-3.5 px-5 bg-[#222222] text-[#222222] cursor-pointer select-none pointer-events-auto touch-manipulation shadow-none;
+        }
+    }
+}
+
 .u-mobile-navbar {
     transition: transform 0.2s cubic-bezier(0.455, 0.03, 0.515, 0.955) 0s, visibility 0.2s ease 0s;
-    @apply fixed bottom-0 left-0 right-0 z-10 flex items-center justify-center border-t border-[rgba(235,235,235,1)] bg-white h-[66px] w-full;
+    @apply fixed bottom-0 left-0 right-0 z-[9999] flex items-center justify-center border-t border-[rgba(235,235,235,1)] bg-white h-[66px] w-full;
 
     &.u-hide-mobile-navbar {
         transform: translateY(100%) !important;
@@ -115,9 +168,9 @@ onUnmounted(() => {
         @apply flex flex-col justify-center items-center space-y-2 no-underline text-center max-w-12;
 
         &.router-link-exact-active {
-            color: red;
+            color: #e31c5f;
             span {
-                color: red;
+                color: #e31c5f;
             }
         }
 

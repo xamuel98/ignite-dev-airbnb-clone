@@ -25,7 +25,7 @@ watch(
 </script>
 
 <template>
-    <NuxtLink to="/sim" class="u-listing-card col-span-5 md:col-span-2 lg:col-span-1" :key="listingContent.data.id">
+    <div class="u-listing-card col-span-5 md:col-span-2 lg:col-span-1" :key="listingContent.data.id">
         <div class="flex flex-col justify-start items-center">
             <div class="relative">
                 <button class="u-listing-favorite" @click.stop.prevent="addToFavourite">
@@ -62,7 +62,7 @@ watch(
                 </div>
             </div>
         </div>
-    </NuxtLink>
+    </div>
 </template>
 
 <style lang="scss">

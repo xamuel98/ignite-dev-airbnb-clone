@@ -24,6 +24,7 @@ const handleChange = (newValue: string) => {
             @change="handleChange(category.slug)"
 			:value="category.slug"
 			:id="category.slug"
+			:checked="category.slug === 'all-categories'"
 		/>
 		<div class="u-category-box opacity-70 group-hover:opacity-100 group-hover:transition-colors">
 			<img :src="category.iconURL" alt="Rooms Icon" />

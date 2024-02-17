@@ -1,18 +1,38 @@
 <script lang="tsx" setup>
+import { useSearchStore } from "~/stores/search";
 import SecondaryNavbar from "./SecondaryNavbar.vue";
 import MobileNavbar from "./MobileNavbar.vue";
 
+const searchStore = useSearchStore();
+
 const isMobile = useState('isMobile');
+
+const getIsActive = computed(() => {
+	return searchStore.getIsActive;
+});
+
+// Returns true if any search field is active
+const anySearchItemIsActive = computed(() => {
+	return (
+		getIsActive.value === 1 ||
+		getIsActive.value === 2 ||
+		getIsActive.value === 3 ||
+		getIsActive.value === 4
+	);
+});
 
 const closeOverlay = () => {
 	if (document) {
 		let body = document.body;
+		let overlayEl = document.querySelector('.dropdowns-opened');
 
 		if (body.classList.contains("cb")) {
 			body.classList.remove("cb");
 			document
 				.querySelector(".u-navbar-search-small")
 				?.classList.remove("override--u-navbar-search-small__active");
+		} else if(overlayEl && overlayEl.classList.contains('dropdowns-opened')) {
+			overlayEl.classList.remove('dropdowns-opened')
 		}
 	}
 };
@@ -69,7 +89,7 @@ const AirbnbLogoComponent = () => (
 		</div>
 		<MobileNavbar v-if="isMobile" />
 	</header>
-	<div class="u-overlay" @click="closeOverlay"></div>
+	<div class="u-overlay" @click="closeOverlay" :class="{'dropdowns-opened': anySearchItemIsActive}"></div>
 
 	<SecondaryNavbar />
 </template>

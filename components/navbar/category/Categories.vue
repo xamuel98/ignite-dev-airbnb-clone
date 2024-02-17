@@ -26,7 +26,7 @@ const nextSlide = () => {
 		let el = scrollerRef.value;
 
 		if (el && el instanceof HTMLElement) {
-			sliderState.value.scroller.scroll({
+			sliderState.value.scroller?.scroll({
 				left: el.scrollLeft + el.clientWidth,
 				top: 0,
 				behavior: "smooth",
@@ -85,7 +85,7 @@ onMounted(async () => {
                 prevButtonEl instanceof HTMLButtonElement &&
                 nextButtonEl &&
                 nextButtonEl instanceof HTMLButtonElement;
-                
+
             if (check) {
                 // Update slider state
                 sliderState.value = {
