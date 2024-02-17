@@ -52,7 +52,7 @@ watch(
                     </span>
                 </div>
                 <div class="u-listing-detail u-detail-3">
-                    Viewed 80,000 times last week
+                    {{ listingContent.data.description }}
                 </div>
                 <div class="u-listing-detail u-detail-4">
                     {{ $filters.date(listingContent.reservation?.startDate) }} - {{ $filters.date(listingContent.reservation?.endDate)  }}
