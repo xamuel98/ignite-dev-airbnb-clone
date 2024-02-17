@@ -18,7 +18,6 @@ export const useListingsStore = defineStore('listingsStore', {
     }),
     getters: {
         getListings: (state): Listing[] =>  state.listings,
-        getFilterQueryParams: (state): IFilterQueryParams => state.filterQueryParams,
     },
     actions: {
         TOGGLE_IS_FAVORITE(listingId: string) {
@@ -31,11 +30,8 @@ export const useListingsStore = defineStore('listingsStore', {
                 createToast('success', 'Listing added to favorites');
             } else {
                 this.favorites.splice(index, 1);
-                createToast('warning', 'Removed listing to favorites');
+                createToast('warning', 'Removed listing from favorites');
             }
-        },
-        SET_FILTER_QUERY(queryParams: IFilterQueryParams) {
-            this.filterQueryParams = queryParams;
         },
     },
 });
